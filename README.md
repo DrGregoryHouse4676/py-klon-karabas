@@ -27,7 +27,7 @@ pip install -r requirements.txt
 ```
 ### 2. Configure .env
 Minimal example:
-
+```
 DJANGO_SECRET_KEY=dev-secret
 DJANGO_DEBUG=1
 DJANGO_ALLOWED_HOSTS=*
@@ -37,7 +37,7 @@ POSTGRES_USER=theatre
 POSTGRES_PASSWORD=theatre
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
-
+```
 ### 3. Migrations + superuser
 ```bash
 python manage.py migrate
