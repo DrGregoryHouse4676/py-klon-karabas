@@ -1,5 +1,6 @@
 asgiref==3.9.1
 attrs==25.3.0
+coverage==7.10.6
 Django==5.2.6
 django-filter==25.1
 djangorestframework==3.16.1
@@ -16,6 +17,7 @@ psycopg2-binary==2.9.10
 Pygments==2.19.2
 PyJWT==2.10.1
 pytest==8.4.2
+pytest-cov==7.0.0
 pytest-django==4.11.1
 python-dotenv==1.1.1
 PyYAML==6.0.2
@@ -24,3 +26,4 @@ rpds-py==0.27.1
 sqlparse==0.5.3
 typing_extensions==4.15.0
 uritemplate==4.2.0
+whitenoise==6.10.0

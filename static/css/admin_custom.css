@@ -1,0 +1,34 @@
+body {
+    background: pink !important;
+}
+
+#user-tools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.theme-toggle {
+    display: flex;
+    gap: 6px;
+}
+
+.theme-toggle button {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.theme-toggle button:hover {
+    background: #4caf50;
+    color: #fff;
+    border-color: #4caf50;
+}
