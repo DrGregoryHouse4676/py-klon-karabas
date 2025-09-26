@@ -20,7 +20,9 @@ def _validate_seats(performance: Performance, seats: List[dict]) -> None:
         seen.add((r, s))
 
 
-def create_reservation(*, user, performance: Performance, seats: List[dict]) -> Reservation:
+def create_reservation(
+    *, user, performance: Performance, seats: List[dict]
+) -> Reservation:
     if not seats:
         raise BookingError("The list of places is empty.")
     _validate_seats(performance, seats)
@@ -36,5 +38,7 @@ def create_reservation(*, user, performance: Performance, seats: List[dict]) -> 
                     seat=item["seat"],
                 )
         except IntegrityError:
-            raise BookingError("Some seats are already taken. Please refresh the layout and try again.")
+            raise BookingError(
+                "Some seats are already taken. Please refresh the layout and try again."
+            )
     return reservation

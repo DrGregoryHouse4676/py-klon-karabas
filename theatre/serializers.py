@@ -1,8 +1,11 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from .models import Actor, Genre, Play, TheatreHall, Performance, Reservation, Ticket
 from .services.seats import build_seat_map
 from .services.booking import create_reservation
+
+
+User = get_user_model()
 
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -27,8 +30,12 @@ class PlaySerializer(serializers.ModelSerializer):
 
 
 class PlayWriteSerializer(serializers.ModelSerializer):
-    actor_ids = serializers.PrimaryKeyRelatedField(queryset=Actor.objects.all(), many=True, write_only=True, required=False)
-    genre_ids = serializers.PrimaryKeyRelatedField(queryset=Genre.objects.all(), many=True, write_only=True, required=False)
+    actor_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Actor.objects.all(), many=True, write_only=True, required=False
+    )
+    genre_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Genre.objects.all(), many=True, write_only=True, required=False
+    )
 
     class Meta:
         model = Play
@@ -68,16 +75,24 @@ class TheatreHallSerializer(serializers.ModelSerializer):
 class PerformanceSerializer(serializers.ModelSerializer):
     play = PlaySerializer(read_only=True)
     theatre_hall = TheatreHallSerializer(read_only=True)
-    play_id = serializers.PrimaryKeyRelatedField(queryset=Play.objects.all(), write_only=True, source="play")
-    theatre_hall_id = serializers.PrimaryKeyRelatedField(queryset=TheatreHall.objects.all(), write_only=True,
-                                                         source="theatre_hall")
+    play_id = serializers.PrimaryKeyRelatedField(
+        queryset=Play.objects.all(), write_only=True, source="play"
+    )
+    theatre_hall_id = serializers.PrimaryKeyRelatedField(
+        queryset=TheatreHall.objects.all(), write_only=True, source="theatre_hall"
+    )
     seat_map = serializers.SerializerMethodField()
 
     class Meta:
         model = Performance
         fields = (
-            "id", "play", "theatre_hall", "show_time",
-            "play_id", "theatre_hall_id", "seat_map",
+            "id",
+            "play",
+            "theatre_hall",
+            "show_time",
+            "play_id",
+            "theatre_hall_id",
+            "seat_map",
         )
 
     def get_seat_map(self, obj):
@@ -100,14 +115,20 @@ class ReservationSerializer(serializers.ModelSerializer):
 
 
 class ReservationCreateSerializer(serializers.Serializer):
-    performance_id = serializers.PrimaryKeyRelatedField(queryset=Performance.objects.all(), source="performance")
-    seats = serializers.ListField(child=serializers.DictField(child=serializers.IntegerField()), allow_empty=False)
+    performance_id = serializers.PrimaryKeyRelatedField(
+        queryset=Performance.objects.all(), source="performance"
+    )
+    seats = serializers.ListField(
+        child=serializers.DictField(child=serializers.IntegerField()), allow_empty=False
+    )
 
     def create(self, validated_data):
         user = self.context["request"].user
         performance = validated_data["performance"]
         seats = validated_data["seats"]
-        reservation = create_reservation(user=user, performance=performance, seats=seats)
+        reservation = create_reservation(
+            user=user, performance=performance, seats=seats
+        )
         return reservation
 
     def to_representation(self, instance):

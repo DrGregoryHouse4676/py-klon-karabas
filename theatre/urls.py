@@ -2,8 +2,14 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import (
-    ActorViewSet, GenreViewSet, PlayViewSet, TheatreHallViewSet,
-    PerformanceViewSet, ReservationViewSet, TicketViewSet, MeViewSet,
+    ActorViewSet,
+    GenreViewSet,
+    PlayViewSet,
+    TheatreHallViewSet,
+    PerformanceViewSet,
+    ReservationViewSet,
+    TicketViewSet,
+    MeViewSet,
 )
 
 router = DefaultRouter()

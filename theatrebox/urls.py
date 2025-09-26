@@ -1,17 +1,22 @@
 from django.contrib import admin
 from django.urls import path, include
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from django.http import HttpResponse
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
+from django.http import JsonResponse
 
 
-def index(request):
-    return HttpResponse("<h1>🎭 TheatreBox</h1><p>Home page of the site</p>")
+def health(_):
+    return JsonResponse("<h1>🎭 TheatreBox</h1><p>Home page of the site</p>")
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="docs"),
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("api/", include("theatre.urls")),
-    path("", index, name="index"),
+    path("", health, name="health"),
 ]

@@ -1,10 +1,17 @@
 import pytest
 from unittest.mock import patch
 
-from django.contrib.auth.models import User
 from django.utils import timezone
 
-from theatre.models import Actor, Genre, Play, TheatreHall, Performance, Reservation, Ticket
+from theatre.models import (
+    Actor,
+    Genre,
+    Play,
+    TheatreHall,
+    Performance,
+    Reservation,
+    Ticket,
+)
 from theatre.serializers import (
     ActorSerializer,
     GenreSerializer,
@@ -52,7 +59,14 @@ def test_play_write_serializer_create_and_update():
     genre = Genre.objects.create(name="Tragedy")
 
     # Create
-    serializer = PlayWriteSerializer(data={"title": "Hamlet", "description": "desc", "actor_ids": [actor.id], "genre_ids": [genre.id]})
+    serializer = PlayWriteSerializer(
+        data={
+            "title": "Hamlet",
+            "description": "desc",
+            "actor_ids": [actor.id],
+            "genre_ids": [genre.id],
+        }
+    )
     serializer.is_valid(raise_exception=True)
     play = serializer.save()
     assert play.actors.count() == 1
@@ -60,7 +74,9 @@ def test_play_write_serializer_create_and_update():
 
     # Update
     new_genre = Genre.objects.create(name="Classic")
-    update_ser = PlayWriteSerializer(play, data={"genre_ids": [new_genre.id]}, partial=True)
+    update_ser = PlayWriteSerializer(
+        play, data={"genre_ids": [new_genre.id]}, partial=True
+    )
     update_ser.is_valid(raise_exception=True)
     updated = update_ser.save()
     assert list(updated.genres.values_list("name", flat=True)) == ["Classic"]
@@ -78,7 +94,9 @@ def test_theatre_hall_serializer_capacity():
 def test_performance_serializer_with_seat_map(mock_build):
     play = Play.objects.create(title="Hamlet")
     hall = TheatreHall.objects.create(name="Hall", rows=5, seats_in_row=5)
-    perf = Performance.objects.create(play=play, theatre_hall=hall, show_time=timezone.now())
+    perf = Performance.objects.create(
+        play=play, theatre_hall=hall, show_time=timezone.now()
+    )
     mock_build.return_value = {"1": ["free", "free"]}
 
     data = PerformanceSerializer(perf).data
@@ -92,7 +110,9 @@ def test_ticket_and_reservation_serializer(django_user_model):
     user = django_user_model.objects.create_user(username="u1", password="123")
     play = Play.objects.create(title="Play1")
     hall = TheatreHall.objects.create(name="Hall1", rows=3, seats_in_row=3)
-    perf = Performance.objects.create(play=play, theatre_hall=hall, show_time=timezone.now())
+    perf = Performance.objects.create(
+        play=play, theatre_hall=hall, show_time=timezone.now()
+    )
     res = Reservation.objects.create(user=user)
     ticket = Ticket.objects.create(performance=perf, reservation=res, row=1, seat=2)
 
@@ -111,7 +131,9 @@ def test_reservation_create_serializer(mock_create, rf, django_user_model):
     user = django_user_model.objects.create_user(username="u2", password="123")
     play = Play.objects.create(title="Play2")
     hall = TheatreHall.objects.create(name="Hall2", rows=3, seats_in_row=3)
-    perf = Performance.objects.create(play=play, theatre_hall=hall, show_time=timezone.now())
+    perf = Performance.objects.create(
+        play=play, theatre_hall=hall, show_time=timezone.now()
+    )
 
     mock_res = Reservation.objects.create(user=user)
     mock_create.return_value = mock_res
@@ -120,13 +142,15 @@ def test_reservation_create_serializer(mock_create, rf, django_user_model):
     request.user = user
     serializer = ReservationCreateSerializer(
         data={"performance_id": perf.id, "seats": [{"row": 1, "seat": 1}]},
-        context={"request": request}
+        context={"request": request},
     )
     serializer.is_valid(raise_exception=True)
     reservation = serializer.save()
 
     assert reservation == mock_res
-    mock_create.assert_called_once_with(user=user, performance=perf, seats=[{"row": 1, "seat": 1}])
+    mock_create.assert_called_once_with(
+        user=user, performance=perf, seats=[{"row": 1, "seat": 1}]
+    )
 
 
 @pytest.mark.django_db

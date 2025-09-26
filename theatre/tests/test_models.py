@@ -2,7 +2,7 @@ import pytest
 from django.db import IntegrityError
 from django.utils import timezone
 
-from theatre.models import Actor, Genre, Play, TheatreHall, Performance, Reservation, Ticket
+from theatre.models import Actor, Genre, Play, TheatreHall, Performance, Reservation
 
 
 @pytest.mark.django_db
@@ -43,7 +43,9 @@ def test_performance_str_and_unique_constraint():
     hall = TheatreHall.objects.create(name="Hall A", rows=5, seats_in_row=5)
     show_time = timezone.now()
 
-    perf1 = Performance.objects.create(play=play, theatre_hall=hall, show_time=show_time)
+    perf1 = Performance.objects.create(
+        play=play, theatre_hall=hall, show_time=show_time
+    )
     assert str(perf1).startswith("Hamlet @ Hall A")
 
     with pytest.raises(IntegrityError):
@@ -56,6 +58,3 @@ def test_reservation_str_and_ordering(django_user_model):
     res = Reservation.objects.create(user=user)
     assert str(res) == f"Reservation #{res.pk} by {user}"
     assert Reservation.objects.first() == res  # ordering -created_at
-
-
-

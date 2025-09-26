@@ -24,7 +24,15 @@ def sample_data(db):
         theatre_hall=hall2,
         show_time=now + timedelta(days=7),
     )
-    return {"play1": play1, "play2": play2, "hall1": hall1, "hall2": hall2, "perf1": perf1, "perf2": perf2, "now": now}
+    return {
+        "play1": play1,
+        "play2": play2,
+        "hall1": hall1,
+        "hall2": hall2,
+        "perf1": perf1,
+        "perf2": perf2,
+        "now": now,
+    }
 
 
 @pytest.mark.django_db

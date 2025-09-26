@@ -52,23 +52,33 @@ class TheatreHall(models.Model):
     def capacity(self) -> int:
         return self.rows * self.seats_in_row
 
+
 class Performance(models.Model):
-    play = models.ForeignKey(Play, on_delete=models.PROTECT, related_name="performances")
-    theatre_hall = models.ForeignKey(TheatreHall, on_delete=models.PROTECT, related_name="performances")
+    play = models.ForeignKey(
+        Play, on_delete=models.PROTECT, related_name="performances"
+    )
+    theatre_hall = models.ForeignKey(
+        TheatreHall, on_delete=models.PROTECT, related_name="performances"
+    )
     show_time = models.DateTimeField()
 
     class Meta:
         ordering = ("show_time",)
         indexes = [models.Index(fields=["show_time"])]
         constraints = [
-            models.UniqueConstraint(fields=["theatre_hall", "show_time"], name="unique_hall_timeslot"),
+            models.UniqueConstraint(
+                fields=["theatre_hall", "show_time"], name="unique_hall_timeslot"
+            ),
         ]
 
     def __str__(self) -> str:
         return f"{self.play.title} @ {self.theatre_hall.name} {self.show_time:%Y-%m-%d %H:%M}"
 
+
 class Reservation(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reservations")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reservations"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -77,17 +87,28 @@ class Reservation(models.Model):
     def __str__(self) -> str:
         return f"Reservation #{self.pk} by {self.user}"
 
+
 class Ticket(models.Model):
-    performance = models.ForeignKey(Performance, on_delete=models.CASCADE, related_name="tickets")
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name="tickets")
+    performance = models.ForeignKey(
+        Performance, on_delete=models.CASCADE, related_name="tickets"
+    )
+    reservation = models.ForeignKey(
+        Reservation, on_delete=models.CASCADE, related_name="tickets"
+    )
     row = models.PositiveIntegerField()
     seat = models.PositiveIntegerField()
 
     class Meta:
         ordering = ("performance", "row", "seat")
         constraints = [
-            models.UniqueConstraint(fields=["performance", "row", "seat"], name="unique_seat_per_performance"),
-            models.CheckConstraint(check=models.Q(row__gt=0) & models.Q(seat__gt=0), name="row_seat_positive"),
+            models.UniqueConstraint(
+                fields=["performance", "row", "seat"],
+                name="unique_seat_per_performance",
+            ),
+            models.CheckConstraint(
+                check=models.Q(row__gt=0) & models.Q(seat__gt=0),
+                name="row_seat_positive",
+            ),
         ]
 
     def __str__(self) -> str:

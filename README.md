@@ -83,4 +83,4 @@ POST /api/token/
 }
 ```
 
-# 👨‍💻 Автор: Lev Ivanov
+# 👨‍💻 Autor: Lev Ivanov
