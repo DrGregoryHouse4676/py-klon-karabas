@@ -15,7 +15,7 @@ services:
       timeout: 5s
       retries: 20
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   web:
     build: .
